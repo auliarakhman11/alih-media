@@ -207,12 +207,19 @@ class LaporanController extends Controller
         return view('laporan.perproses',[
             'title' => 'Laporan Perproses',
             'dt_berkas' => History::select('history.*')->selectRaw("COUNT(id) as jml")->where('selesai',NULL)->groupBy('proses_id')->get(),
+            'perpelayanan' => Berkas::select('berkas.*')->selectRaw("COUNT(id) as jml")->where('selesai',0)->groupBy('pelayanan_id')->get(),
         ]);
     }
 
     public function getLaporanPerproses($proses_id){
         return view('laporan.dt_info_perproses',[
             'dt_berkas' => History::where('selesai',NULL)->where('proses_id',$proses_id)->get(),
+        ])->render();
+    }
+
+    public function getLaporanPerpelayanan($pelayanan_id){
+        return view('laporan.dt_info_perpelayanan',[
+            'dt_berkas' => Berkas::where('selesai',0)->where('pelayanan_id',$pelayanan_id)->get(),
         ])->render();
     }
 
@@ -255,6 +262,98 @@ class LaporanController extends Controller
             'berkas' => $berkas,
             'dt_proses' => $dt_proses,
         ])->render();
+    }
+
+    public function dashboard(Request $request){
+
+        if ($request->query('tgl1')) {
+            $tgl1 = $request->query('tgl1');
+            $tgl2 = $request->query('tgl2');
+        } else {
+            $tgl1 = date('Y-m-d', strtotime("-1 month", strtotime(date("Y-m-d"))));
+            $tgl2 = date('Y-m-d');
+        }
+
+        $periode = History::select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as count'))
+        ->where('created_at','>=',$tgl1.' 00:00:01')
+        ->where('created_at','<=',$tgl2. ' 23:59:59')
+        ->groupBy('date')
+        ->get();
+
+        $data_berkas_masuk = Berkas::select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as jml_masuk'))
+        ->where('created_at','>=',$tgl1.' 00:00:01')
+        ->where('created_at','<=',$tgl2. ' 23:59:59')
+        ->groupBy('date')
+        ->get();
+
+        $data_berkas_selesai = History::select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as jml_selesai'))
+        ->where('proses_id',8)
+        ->where('created_at','>=',$tgl1.' 00:00:01')
+        ->where('created_at','<=',$tgl2. ' 23:59:59')
+        ->groupBy('date')
+        ->get();
+
+        $data_periode = [];
+        $dat_berkas_masuk = [];
+        $dat_berkas_selesai = [];
+        foreach ($periode as $pr) {
+            $data_periode[] =  date("d/m/Y", strtotime($pr->date));
+
+            $dt_berkas_masuk = $data_berkas_masuk->where('date',$pr->date)->first();
+            $dat_berkas_masuk[] = (int) ($dt_berkas_masuk ? $dt_berkas_masuk->jml_masuk : 0);
+
+            $dt_berkas_selesai = $data_berkas_selesai->where('date',$pr->date)->first();
+            $dat_berkas_selesai[] = (int) ($dt_berkas_selesai ? $dt_berkas_selesai->jml_selesai : 0);
+
+        }
+
+        $dt_pr = json_encode($data_periode);
+
+
+        $data_c = [];
+
+        $dt_chart = [];
+        $dt_chart['label'] = 'Berkas Masuk';
+        $rc1 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $rc2 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $rc3 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $color = $rc1 . $rc2 . $rc3;
+        $dt_chart['data'] =  $dat_berkas_masuk;
+        $dt_chart['backgroundColor'] = '#' . $color;
+        $dt_chart['borderColor'] = '#' . $color;
+        $dt_chart['borderWidth'] = 1;
+        $dt_chart['color'] = 'green';
+        $data_c[] = $dt_chart;
+
+        $dt_chart = [];
+        $dt_chart['label'] = 'Berkas Selesai';
+        $rc1 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $rc2 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $rc3 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $color = $rc1 . $rc2 . $rc3;
+        $dt_chart['data'] =  $dat_berkas_selesai;
+        $dt_chart['backgroundColor'] = '#' . $color;
+        $dt_chart['borderColor'] = '#' . $color;
+        $dt_chart['borderWidth'] = 1;
+        $dt_chart['color'] = 'green';
+        $data_c[] = $dt_chart;
+
+
+        $dtc = json_encode($data_c);
+
+        $berkas_selesai = Berkas::where('selesai',1)->count();
+        $berkas_belum = Berkas::where('selesai',0)->count();
+
+        
+
+        return view('laporan.dashboard',[
+            'title' => 'Dashboard',
+            'periode' => $dt_pr,
+            'chart' => $dtc,
+            'berkas_selesai' => $berkas_selesai,
+            'berkas_belum' => $berkas_belum,
+
+        ]);
     }
 
 

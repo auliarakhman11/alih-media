@@ -14,13 +14,13 @@
       
       <div class="card">
           <div class="card-header">
-              <h5 class="float-start">Laporan Perproses</h5>
+              <h5 class="float-start">Laporan Tunggakan Perproses</h5>
               
           </div>
           
           <div class="card-body ">
 
-            <div class="scrollme">
+            
                 <table class="table table-sm table-bordered">
                     <thead>
                         <tr>
@@ -43,7 +43,45 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
+            
+
+          </div>
+          
+        </div>
+
+
+        <div class="card mt-3">
+          <div class="card-header">
+              <h5 class="float-start">Laporan Tunggakan Perpelayanan</h5>
+              
+          </div>
+          
+          <div class="card-body ">
+
+            
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="bg-white">#</th>
+                            <th class="bg-white">Pelayanan</th>
+                            <th class="bg-white">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $i=1;
+                        @endphp
+                        @foreach ($perpelayanan as $d)
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td>{{ $d->pelayanan->nm_pelayanan }}</td>                                
+                                <td class="text-center"><a class="btn_info_pelayanan" data-bs-toggle="modal" href="#modal_info_pelayanan" pelayanan_id="{{ $d->pelayanan_id }}">{{ $d->jml }}</a></td>
+                                
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            
 
           </div>
           
@@ -71,10 +109,26 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modal_infoLabel">Pengecekan</h5>
+          <h5 class="modal-title" id="modal_infoLabel">Tunggakan Perproses</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="table_info">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modal_info_pelayanan" tabindex="-1" aria-labelledby="modal_info_pelayananLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal_info_pelayananLabel">Tunggakan Perproses</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="table_info_pelayanan">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -133,6 +187,16 @@
                 $('#table_info').html('<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>');
                 $.get('getLaporanPerproses/' + proses_id, function (data) {
                     $('#table_info').html(data);
+                });
+
+            });
+
+            $(document).on('click', '.btn_info_pelayanan', function() {
+
+                var pelayanan_id = $(this).attr('pelayanan_id');
+                $('#table_info_pelayanan').html('<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>');
+                $.get('getLaporanPerpelayanan/' + pelayanan_id, function (data) {
+                    $('#table_info_pelayanan').html(data);
                 });
 
             });

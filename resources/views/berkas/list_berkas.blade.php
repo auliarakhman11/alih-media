@@ -51,7 +51,8 @@
                       <th style="font-size: 10px;">Kecamatan</th>
                       <th style="font-size: 10px;">Kelurahan</th>
                       <th style="font-size: 10px;">Hak</th>
-                      <th style="font-size: 10px;">Pemohon</th>
+                      <th style="font-size: 10px;">Pelayanan</th>
+                      <th style="font-size: 10px;">Pe mohon</th>
                       <th style="font-size: 10px;">SU/GS</th>
                       <th style="font-size: 10px;">NIB</th>
                       <th style="font-size: 10px;">Proses</th>
@@ -273,6 +274,10 @@
                     {
                         data: 'dt_hak',
                         name: 'dt_berkas.dt_hak'
+                    },
+                    {
+                        data: 'nm_pelayanan',
+                        name: 'dt_berkas.nm_pelayanan'
                     },
                     {
                         data: 'nm_pemohon',

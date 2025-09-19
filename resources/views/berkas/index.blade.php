@@ -151,12 +151,26 @@
 
               <div class="col-6 mt-3">
                 <div class="row">
-                  <div class="col-4"><label class="float-end" for="nm_pemohon">Pemohonan</label></div>
+                  <div class="col-4"><label class="float-end" for="nm_pemohon">Pemohon</label></div>
                   <div class="col-8">
                     <input type="text" name="nm_pemohon" id="nm_pemohon" class="form-control" >
                   </div>
                 </div>
               </div>
+
+              <div class="col-6 mt-3">
+                  <div class="row">
+                    <div class="col-4"><label class="float-end" for="pelayanan_id">Pelayanan</label></div>
+                    <div class="col-8">
+                      <select class="form-control" name="pelayanan_id" id="pelayanan_id" required>
+                        <option value="">Pilih jenis pelayanan</option>
+                        @foreach ($pelayanan as $p)
+                            <option value="{{ $p->id }}">{{ $p->nm_pelayanan }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                </div>
 
               <div class="col-6 mt-3">
                 <div class="row">
@@ -166,8 +180,6 @@
                   </div>
                 </div>
               </div>
-
-              <div class="col-6"></div>
   
                 <div class="col-6">
                   

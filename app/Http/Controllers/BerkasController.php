@@ -8,6 +8,7 @@ use App\Models\History;
 use App\Models\JenisHak;
 use App\Models\Kecamatan;
 use App\Models\Kelurahan;
+use App\Models\Pelayanan;
 use App\Models\Proses;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class BerkasController extends Controller
             'kecamatan' => Kecamatan::all(),
             'kelurahan' => Kelurahan::all(),
             'jenis_hak' => JenisHak::all(),
+            'pelayanan' => Pelayanan::all(),
         ]);
     }
 
@@ -67,6 +69,7 @@ class BerkasController extends Controller
                 'kecamatan_id' => $request->kecamatan_id,
                 'kelurahan_id' => $request->kelurahan_id,
                 'jenis_hak_id' => $request->jenis_hak_id,
+                'pelayanan_id' => $request->pelayanan_id,
                 'no_hak' => sprintf("%05d", $request->no_hak),
                 'nm_pemohon' => $request->nm_pemohon,
                 'percepatan' => 0,
@@ -120,11 +123,12 @@ class BerkasController extends Controller
         // )
         // ->where('user_id',Auth::id())->where('buka_validasi_bt',1)->where('buka_validasi_su',1)->where('selesai',0)->orderBy('percepatan','DESC')->orderBy('id','ASC')->with(['kecamatan','kelurahan','proses','jenis_hak','dari']);
 
-        $pengajuan = History::select('history.proses_id','history.berkas_id','history.id','history.ket','history.user_id','history.dari')->selectRaw("dt_berkas.nm_kecamatan,dt_berkas.nm_kelurahan, dt_berkas.dt_hak, dt_berkas.no_hak, dt_berkas.dt_peta, dt_berkas.nib, dt_berkas.nm_pemohon, dt_berkas.tanggal, dt_berkas.percepatan, dt_berkas.file_name, dt_berkas.lama_tgl, dt_induk.ket_induk, dt_induk.induk_selesai")
+        $pengajuan = History::select('history.proses_id','history.berkas_id','history.id','history.ket','history.user_id','history.dari')->selectRaw("dt_berkas.nm_kecamatan,dt_berkas.nm_kelurahan, dt_berkas.dt_hak, dt_berkas.no_hak, dt_berkas.dt_peta, dt_berkas.nib, dt_berkas.nm_pemohon, dt_berkas.tanggal, dt_berkas.percepatan, dt_berkas.file_name, dt_berkas.lama_tgl, dt_induk.ket_induk, dt_induk.induk_selesai, dt_berkas.nm_pelayanan")
         ->leftJoin(
-            DB::raw("(SELECT berkas.*, nm_kecamatan, nm_kelurahan, CONCAT(DATE_FORMAT(berkas.created_at, '%d-%m-%Y'),'<br>',IF(berkas.ket IS NOT NULL, berkas.ket,'')) as tanggal, CONCAT(kode_hak,'-',no_hak) as dt_hak, CONCAT(nm_jenis_peta,'-',no_peta,'-',tahun_peta) as dt_peta, datediff(current_date(), berkas.created_at) as lama_tgl FROM berkas 
+            DB::raw("(SELECT berkas.*, nm_kecamatan, nm_kelurahan, nm_pelayanan, CONCAT(DATE_FORMAT(berkas.created_at, '%d-%m-%Y'),'<br>',IF(berkas.ket IS NOT NULL, berkas.ket,'')) as tanggal, CONCAT(kode_hak,'-',no_hak) as dt_hak, CONCAT(nm_jenis_peta,'-',no_peta,'-',tahun_peta) as dt_peta, datediff(current_date(), berkas.created_at) as lama_tgl FROM berkas 
             LEFT JOIN kecamatan ON berkas.kecamatan_id = kecamatan.id
             LEFT JOIN kelurahan ON berkas.kelurahan_id = kelurahan.id
+            LEFT JOIN pelayanan ON berkas.pelayanan_id = pelayanan.id
             LEFT JOIN jenis_hak ON berkas.jenis_hak_id = jenis_hak.id
             LEFT JOIN jenis_peta ON berkas.jenis_peta_id = jenis_peta.id
             GROUP BY id) dt_berkas"), 

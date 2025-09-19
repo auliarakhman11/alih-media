@@ -10,7 +10,7 @@ class Berkas extends Model
     use HasFactory;
 
     protected $table = 'berkas';
-    protected $fillable = ['induk_id','kecamatan_id','kelurahan_id','jenis_hak_id','no_hak','no_peta','tahun_peta','jenis_peta_id','nib','file_name','nm_pemohon','percepatan','selesai','ket','nibel'];
+    protected $fillable = ['induk_id','kecamatan_id','kelurahan_id','jenis_hak_id','pelayanan_id','no_hak','no_peta','tahun_peta','jenis_peta_id','nib','file_name','nm_pemohon','percepatan','selesai','ket','nibel'];
 
     public function kecamatan()
     {
@@ -35,6 +35,11 @@ class Berkas extends Model
     public function history()
     {
         return $this->hasMany(History::class,'berkas_id','id')->orderBy('id','DESC');
+    }
+
+    public function pelayanan()
+    {
+        return $this->belongsTo(Pelayanan::class,'pelayanan_id','id');
     }
 
 }

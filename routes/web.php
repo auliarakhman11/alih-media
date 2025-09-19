@@ -83,6 +83,9 @@ Route::middleware('auth')->group(function(){
     //end kunci
 
     //laporan
+
+    Route::get('dashboard',[LaporanController::class,'dashboard'])->name('dashboard');
+
     Route::get('info-berkas',[LaporanController::class,'infoBerkas'])->name('infoBerkas');
     Route::post('dtInfoBerkas',[LaporanController::class,'dtInfoBerkas'])->name('dtInfoBerkas');
     
@@ -97,6 +100,7 @@ Route::middleware('auth')->group(function(){
     Route::get('getPekerjaanPerhari/{user_id}/{tgl}',[LaporanController::class,'getPekerjaanPerhari'])->name('getPekerjaanPerhari');
     Route::get('laporan-perproses',[LaporanController::class,'laporanPerproses'])->name('laporanPerproses');
     Route::get('getLaporanPerproses/{proses_id}',[LaporanController::class,'getLaporanPerproses'])->name('getLaporanPerproses');
+    Route::get('getLaporanPerpelayanan/{pelayanan_id}', [LaporanController::class,'getLaporanPerpelayanan'])->name('getLaporanPerpelayanan');
     //endLaporan
     
     //tutup berkas

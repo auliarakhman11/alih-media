@@ -36,13 +36,18 @@
       <span class="menu-header-text"><i class='bx bxs-user-pin'></i> {{ Session::get('name') }}</span>
     </li>
 
-    <li class="menu-item {{ Request::is(['info-berkas','berkas-tunggakan','berkas-selesai','laporan-perhari','laporan-perproses']) ? 'active open' : '' }}">
+    <li class="menu-item {{ Request::is(['info-berkas','berkas-tunggakan','berkas-selesai','laporan-perhari','laporan-perproses','dashboard']) ? 'active open' : '' }}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class='menu-icon tf-icons bx bx-line-chart'></i>
         <div data-i18n="Laporan">Laporan</div>
       </a>
       <ul class="menu-sub">
 
+        <li class="menu-item {{ Request::is('dashboard') ? 'active' : '' }}">
+          <a href="{{ route('dashboard') }}" class="menu-link">
+            <div data-i18n="Dashboard">Dashboard</div>
+          </a>
+        </li>
 
         <li class="menu-item {{ Request::is('info-berkas') ? 'active' : '' }}">
           <a href="{{ route('infoBerkas') }}" class="menu-link">
@@ -70,7 +75,7 @@
 
         <li class="menu-item {{ Request::is('laporan-perproses') ? 'active' : '' }}">
           <a href="{{ route('laporanPerproses') }}" class="menu-link">
-            <div data-i18n="Laporan Perproses">Laporan Perproses</div>
+            <div data-i18n="Laporan Perproses">Laporan Tunggakan</div>
           </a>
         </li>
 
