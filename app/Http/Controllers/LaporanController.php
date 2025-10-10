@@ -166,9 +166,11 @@ class LaporanController extends Controller
 
     public function laporanPerhari(){
         // $proses = Proses::whereIn('id',['3,4,5,6,7'])->get();
+        $tgl1 = date('Y-m-d', strtotime("-1 month", strtotime(date("Y-m-d"))));
+            $tgl2 = date('Y-m-d');
         $user = User::where('jenis_user_id',3)->get();
-        $periode = History::select(DB::raw('DATE(created_at) as date'))->where('created_at','>=',date('Y-m-01 00:00:00'))->where('created_at','<=',date('Y-m-d 23:59:59'))->groupBy('date')->get();
-        $history = History::select(DB::raw('DATE(selesai) as date'))->selectRaw("COUNT(id) as jml, user_id")->where('selesai','>=',date('Y-m-01 00:00:00'))->where('selesai','<=',date('Y-m-d 23:59:59'))->where('selesai','!=',NULL)->groupBy('user_id')->groupBy('date')->get();
+        $periode = History::select(DB::raw('DATE(created_at) as date'))->where('created_at','>=',$tgl1.' 00:00:01')->where('created_at','<=',$tgl2.' 23:59:59')->groupBy('date')->get();
+        $history = History::select(DB::raw('DATE(selesai) as date'))->selectRaw("COUNT(id) as jml, user_id")->where('selesai','>=',$tgl1.' 00:00:01')->where('selesai','<=',$tgl2.' 23:59:59')->where('selesai','!=',NULL)->groupBy('user_id')->groupBy('date')->get();
 
         $dt_laporan = [];
         foreach ($user as $u) {
@@ -296,14 +298,21 @@ class LaporanController extends Controller
         $data_periode = [];
         $dat_berkas_masuk = [];
         $dat_berkas_selesai = [];
+
+        $tot_berkas_masuk = 0;
+        $tot_berkas_selesai = 0;
         foreach ($periode as $pr) {
             $data_periode[] =  date("d/m/Y", strtotime($pr->date));
 
             $dt_berkas_masuk = $data_berkas_masuk->where('date',$pr->date)->first();
             $dat_berkas_masuk[] = (int) ($dt_berkas_masuk ? $dt_berkas_masuk->jml_masuk : 0);
 
+            $tot_berkas_masuk += (int) ($dt_berkas_masuk ? $dt_berkas_masuk->jml_masuk : 0);
+
             $dt_berkas_selesai = $data_berkas_selesai->where('date',$pr->date)->first();
             $dat_berkas_selesai[] = (int) ($dt_berkas_selesai ? $dt_berkas_selesai->jml_selesai : 0);
+
+            $tot_berkas_selesai += (int) ($dt_berkas_selesai ? $dt_berkas_selesai->jml_selesai : 0);
 
         }
 
@@ -313,11 +322,11 @@ class LaporanController extends Controller
         $data_c = [];
 
         $dt_chart = [];
-        $dt_chart['label'] = 'Berkas Masuk';
-        $rc1 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-        $rc2 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-        $rc3 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-        $color = $rc1 . $rc2 . $rc3;
+        $dt_chart['label'] = 'Berkas Masuk ('.$tot_berkas_masuk.')';
+        // $rc1 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        // $rc2 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        // $rc3 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $color = 'ffcd57';
         $dt_chart['data'] =  $dat_berkas_masuk;
         $dt_chart['backgroundColor'] = '#' . $color;
         $dt_chart['borderColor'] = '#' . $color;
@@ -326,11 +335,11 @@ class LaporanController extends Controller
         $data_c[] = $dt_chart;
 
         $dt_chart = [];
-        $dt_chart['label'] = 'Berkas Selesai';
-        $rc1 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-        $rc2 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-        $rc3 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
-        $color = $rc1 . $rc2 . $rc3;
+        $dt_chart['label'] = 'Berkas Selesai ('.$tot_berkas_selesai.')';
+        // $rc1 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        // $rc2 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        // $rc3 = str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
+        $color = '36a2eb';
         $dt_chart['data'] =  $dat_berkas_selesai;
         $dt_chart['backgroundColor'] = '#' . $color;
         $dt_chart['borderColor'] = '#' . $color;
@@ -350,8 +359,8 @@ class LaporanController extends Controller
             'title' => 'Dashboard',
             'periode' => $dt_pr,
             'chart' => $dtc,
-            'berkas_selesai' => $berkas_selesai,
-            'berkas_belum' => $berkas_belum,
+            'berkas_selesai' => $berkas_selesai ? $berkas_selesai : 0,
+            'berkas_belum' => $berkas_belum ? $berkas_belum : 0,
 
         ]);
     }

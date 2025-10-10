@@ -45,7 +45,7 @@ class AuthController extends Controller
                 if ($user->jenis_user_id == 4) {
                     return redirect(RouteServiceProvider::HOME);
                 }elseif($user->jenis_user_id == 2){
-                    return redirect(route('laporanPerhari'));
+                    return redirect(route('dashboard'));
                 }else {
                     return redirect(route('listBerkas'));
                 }

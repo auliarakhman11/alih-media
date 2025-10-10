@@ -12,7 +12,7 @@
 
 
 <div class="container-xxl flex-grow-1 container-p-y">
-  <div class="row">
+  <div class="row justify-content-center">
 
     <div class="col-12 mb-4 order-0">
       
@@ -30,7 +30,10 @@
           
         </div>
 
-        <div class="card">
+
+    </div>
+    <div class="col-8">
+      <div class="card">
           <div class="card-header">
               <h5 class="float-start">Persentase Pengelesaian Alih Media</h5>
               
@@ -43,8 +46,6 @@
           </div>
           
         </div>
-
-
     </div>
 
     <!-- Total Revenue -->
@@ -112,6 +113,28 @@
                 labels: periode,
                 datasets: cData
             }
+        });
+
+        const dataPersen = {
+          labels: [
+            'Selesai',
+            'Proses'
+          ],
+          datasets: [{
+            label: 'My First Dataset',
+            data: [{{ $berkas_selesai }}, {{ $berkas_belum }}],
+            backgroundColor: [
+              'rgb(54, 162, 235)',
+              'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+          }]
+        };
+
+        const ctx2 = document.getElementById('persentase');
+        const myChart2 = new Chart(ctx2, {
+            type: 'pie',
+            data: dataPersen
         });
     </script>
 

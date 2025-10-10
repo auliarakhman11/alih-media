@@ -37,7 +37,7 @@
                         <tr>
                             <th class="bg-white" style="font-size: 12px;">Petugas</th>
                             @foreach ($periode as $d)
-                                <th class="bg-white text-center" style="font-size: 12px;">{{ date("d/m/Y", strtotime($d->date)) }}</th>
+                                <th class="bg-white text-center" style="font-size: 12px;">{{ date("d/m", strtotime($d->date)) }}</th>
                             @endforeach
                         </tr>
                     </thead>
