@@ -498,6 +498,11 @@ class BerkasController extends Controller
             Berkas::where('id',$berkas_id)->update([
                 'selesai' => 1
             ]);
+
+            $dt_berkas = Berkas::where('id',$berkas_id)->frist();
+
+            File::delete('scan/'.$dt_berkas->file_name);
+
         }
         // elseif ($jenis == 4) {
         //     History::where('id',$history_id)->update([
@@ -742,6 +747,17 @@ class BerkasController extends Controller
         ]);
 
         return true;
+    }
+
+    public function deleteFileSelesai(){
+        $dt_berkas = Berkas::where('selesai',1)->where('created_at','>=','2025-01-01 00:00:01')->where('created_at','<=','2025-01-31 23:59:59')->get();
+
+        foreach ($dt_berkas as $d) {
+            File::delete('scan/'.$d->file_name);
+        }
+
+        return true;
+
     }
     
     // public function import(){

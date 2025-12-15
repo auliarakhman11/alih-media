@@ -107,6 +107,10 @@ Route::middleware('auth')->group(function(){
     Route::get('tutupBerkas/{berkas_id}',[LaporanController::class,'tutupBerkas'])->name('tutupBerkas');
     Route::get('dtInfoBerkasGet/{berkas_id}',[LaporanController::class,'dtInfoBerkasGet'])->name('dtInfoBerkasGet');
     //end tutup berkas
+
+    //delete file
+    Route::get('deleteFileSelesai',[BerkasController::class,'deleteFileSelesai'])->name('deleteFileSelesai');
+    //end deleste selesai
     
 
     //block
