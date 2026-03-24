@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function(){
         Route::get('get-data-user',[UserController::class,'getDataUser'])->name('getDataUser');
         Route::post('edit-user',[UserController::class,'editUser'])->name('editUser');
         Route::post('add-user',[UserController::class,'addUser'])->name('addUser');
+
+        Route::get('uraiBTSU', [BerkasController::class,'uraiBTSU'])->name('uraiBTSU');
     });
 
 

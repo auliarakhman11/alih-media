@@ -14,7 +14,7 @@
       
       <div class="card">
           <div class="card-header">
-              <h5 class="float-start">Laporan Tunggakan Perproses</h5>
+              <h5 class="float-start">Laporan Tunggakan Seksi SP</h5>
               
           </div>
           
@@ -32,8 +32,16 @@
                     <tbody>
                         @php
                             $i=1;
+                            $total_tunggakan_sp = 0;
                         @endphp
                         @foreach ($dt_berkas as $d)
+                        @php
+                            $proses_sp = [1,4,5];
+                            if (!in_array($d->proses_id, $proses_sp)) {
+                              continue;
+                            }
+                            $total_tunggakan_sp += $d->jml;
+                        @endphp
                             <tr>
                                 <td>{{ $i++ }}</td>
                                 <td>{{ $d->proses->nm_proses }}</td>                                
@@ -42,6 +50,114 @@
                             </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                      <tr class="text-center">
+                        <td colspan="2"><strong>Total</strong></td>
+                        <td><strong>{{ $total_tunggakan_sp }}</strong></td>
+                      </tr>
+                    </tfoot>
+                </table>
+            
+
+          </div>
+          
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-header">
+              <h5 class="float-start">Laporan Tunggakan Seksi PHP</h5>
+              
+          </div>
+          
+          <div class="card-body ">
+
+            
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="bg-white">#</th>
+                            <th class="bg-white">Proses</th>
+                            <th class="bg-white">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $i=1;
+                            $total_tunggakan_php = 0;
+                        @endphp
+                        @foreach ($dt_berkas as $d)
+                        @php
+                            $proses_php = [2,3,6];
+                            if (!in_array($d->proses_id, $proses_php)) {
+                              continue;
+                            }
+                            $total_tunggakan_php += $d->jml;
+                        @endphp
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td>{{ $d->proses->nm_proses }}</td>                                
+                                <td class="text-center"><a class="btn_info" data-bs-toggle="modal" href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a></td>
+                                
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                      <tr class="text-center">
+                        <td colspan="2"><strong>Total</strong></td>
+                        <td><strong>{{ $total_tunggakan_php }}</strong></td>
+                      </tr>
+                    </tfoot>
+                </table>
+            
+
+          </div>
+          
+        </div>
+
+        <div class="card mt-3">
+          <div class="card-header">
+              <h5 class="float-start">Laporan Tunggakan Loket</h5>
+              
+          </div>
+          
+          <div class="card-body ">
+
+            
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="bg-white">#</th>
+                            <th class="bg-white">Proses</th>
+                            <th class="bg-white">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $i=1;
+                            $total_tunggakan_loket = 0;
+                        @endphp
+                        @foreach ($dt_berkas as $d)
+                        @php
+                            $proses_loket = [7];
+                            if (!in_array($d->proses_id, $proses_loket)) {
+                              continue;
+                            }
+                            $total_tunggakan_loket += $d->jml;
+                        @endphp
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td>{{ $d->proses->nm_proses }}</td>                                
+                                <td class="text-center"><a class="btn_info" data-bs-toggle="modal" href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a></td>
+                                
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                      <tr class="text-center">
+                        <td colspan="2"><strong>Total</strong></td>
+                        <td><strong>{{ $total_tunggakan_loket }}</strong></td>
+                      </tr>
+                    </tfoot>
                 </table>
             
 

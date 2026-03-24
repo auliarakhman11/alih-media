@@ -418,123 +418,169 @@ class BerkasController extends Controller
     
     public function krimBerkas($jenis,$history_id,$berkas_id,$proses_id){
 
-        if ($jenis == 1) {
-            History::where('id',$history_id)->update([
-                'selesai' => date('Y-m-d H:i:s'),
-                'user_id' => Auth::id(),
-            ]);
-            $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+        if ($proses_id == 3) {
+                History::where('id',$history_id)->update([
+                    'selesai' => date('Y-m-d H:i:s')
+                ]);
 
-            if (!$cek) {
                 History::create([
         
                     'berkas_id' => $berkas_id,
-                    'proses_id' => 3,
+                    'proses_id' => 9,
                     'dari' => Auth::id(),
                     'user_id' => 28,
                 ]);
-            }
 
-        } elseif ($jenis == 2) {
-            History::where('id',$history_id)->update([
-                'selesai' => date('Y-m-d H:i:s')
-            ]);
-
-            History::create([
-        
-                'berkas_id' => $berkas_id,
-                'proses_id' => 4,
-                'dari' => Auth::id(),
-            ]);
-
-            History::create([
-        
-                'berkas_id' => $berkas_id,
-                'proses_id' => 6,
-                'dari' => Auth::id(),
-            ]);
-        } elseif ($jenis == 3) {
-            History::where('id',$history_id)->update([
-                'selesai' => date('Y-m-d H:i:s'),
-                'user_id' => Auth::id(),
-            ]);
-
-            $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
-
-            if (!$cek) {
                 History::create([
         
                     'berkas_id' => $berkas_id,
-                    'proses_id' => 7,
+                    'proses_id' => 10,
                     'dari' => Auth::id(),
-                    'user_id' => 29,
-                    // 'selesai' => date('Y-m-d H:i:s')
+                    'user_id' => 28,
+                ]);
+        }else{
+
+            if ($jenis == 1) {
+                History::where('id',$history_id)->update([
+                    'selesai' => date('Y-m-d H:i:s'),
+                    'user_id' => Auth::id(),
+                ]);
+                $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+
+                if (!$cek) {
+                    // History::create([
+            
+                    //     'berkas_id' => $berkas_id,
+                    //     'proses_id' => 3,
+                    //     'dari' => Auth::id(),
+                    //     'user_id' => 28,
+                    // ]);
+                    History::create([
+            
+                        'berkas_id' => $berkas_id,
+                        'proses_id' => 9,
+                        'dari' => Auth::id(),
+                        'user_id' => 28,
+                    ]);
+
+                    History::create([
+            
+                        'berkas_id' => $berkas_id,
+                        'proses_id' => 10,
+                        'dari' => Auth::id(),
+                        'user_id' => 28,
+                    ]);
+                }
+
+            } elseif ($jenis == 2) {
+                History::where('id',$history_id)->update([
+                    'selesai' => date('Y-m-d H:i:s')
                 ]);
 
+                $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+
+                if (!$cek) {
+                    History::create([
+            
+                        'berkas_id' => $berkas_id,
+                        'proses_id' => 4,
+                        'dari' => Auth::id(),
+                    ]);
+
+                    History::create([
                 
+                        'berkas_id' => $berkas_id,
+                        'proses_id' => 6,
+                        'dari' => Auth::id(),
+                    ]);
+                }
+
+            } elseif ($jenis == 3) {
+                History::where('id',$history_id)->update([
+                    'selesai' => date('Y-m-d H:i:s'),
+                    'user_id' => Auth::id(),
+                ]);
+
+                $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+
+                if (!$cek) {
+                    History::create([
+            
+                        'berkas_id' => $berkas_id,
+                        'proses_id' => 7,
+                        'dari' => Auth::id(),
+                        'user_id' => 29,
+                        // 'selesai' => date('Y-m-d H:i:s')
+                    ]);
+
+                    
+                }
+
+                // History::create([
+            
+                //     'berkas_id' => $berkas_id,
+                //     'proses_id' => $proses_id + 1,
+                //     'dari' => Auth::id(),
+                // ]);
+            }elseif($jenis == 6){
+                History::where('id',$history_id)->update([
+                    'selesai' => date('Y-m-d H:i:s'),
+                    'user_id' => Auth::id(),
+                ]);
+
+                History::create([
+            
+                    'berkas_id' => $berkas_id,
+                    'proses_id' => 8,
+                    'dari' => Auth::id(),
+                    'user_id' => Auth::id(),
+                    'selesai' => date('Y-m-d H:i:s')
+                ]);
+
+                Berkas::where('id',$berkas_id)->update([
+                    'selesai' => 1
+                ]);
+
+                $dt_berkas = Berkas::where('id',$berkas_id)->frist();
+
+                File::delete('scan/'.$dt_berkas->file_name);
+
+            }
+            // elseif ($jenis == 4) {
+            //     History::where('id',$history_id)->update([
+            //         'selesai' => date('Y-m-d H:i:s'),
+            //         'user_id' => Auth::id(),
+            //     ]);
+            //     $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+
+            //     if (!$cek) {
+            //         History::create([
+            
+            //             'berkas_id' => $berkas_id,
+            //             'proses_id' => 8,
+            //             'dari' => Auth::id(),
+            //             'user_id' => Auth::id(),
+            //             'selesai' => date('Y-m-d H:i:s')
+            //         ]);
+
+            //         $dt_berkas = Berkas::where('id',$berkas_id)->first();
+            //         File::delete('scan/'.$dt_berkas->file_name);
+
+            //         Berkas::where('id',$berkas_id)->update([
+            //             'selesai' => 1,
+            //             'file_name' => null,
+            //         ]);
+
+                    
+            //     }
+            // }
+            else {
+                return true;
             }
 
-            // History::create([
-        
-            //     'berkas_id' => $berkas_id,
-            //     'proses_id' => $proses_id + 1,
-            //     'dari' => Auth::id(),
-            // ]);
-        }elseif($jenis == 6){
-            History::where('id',$history_id)->update([
-                'selesai' => date('Y-m-d H:i:s'),
-                'user_id' => Auth::id(),
-            ]);
-
-            History::create([
-        
-                'berkas_id' => $berkas_id,
-                'proses_id' => 8,
-                'dari' => Auth::id(),
-                'user_id' => Auth::id(),
-                'selesai' => date('Y-m-d H:i:s')
-            ]);
-
-            Berkas::where('id',$berkas_id)->update([
-                'selesai' => 1
-            ]);
-
-            $dt_berkas = Berkas::where('id',$berkas_id)->frist();
-
-            File::delete('scan/'.$dt_berkas->file_name);
-
         }
-        // elseif ($jenis == 4) {
-        //     History::where('id',$history_id)->update([
-        //         'selesai' => date('Y-m-d H:i:s'),
-        //         'user_id' => Auth::id(),
-        //     ]);
-        //     $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
 
-        //     if (!$cek) {
-        //         History::create([
         
-        //             'berkas_id' => $berkas_id,
-        //             'proses_id' => 8,
-        //             'dari' => Auth::id(),
-        //             'user_id' => Auth::id(),
-        //             'selesai' => date('Y-m-d H:i:s')
-        //         ]);
-
-        //         $dt_berkas = Berkas::where('id',$berkas_id)->first();
-        //         File::delete('scan/'.$dt_berkas->file_name);
-
-        //         Berkas::where('id',$berkas_id)->update([
-        //             'selesai' => 1,
-        //             'file_name' => null,
-        //         ]);
-
-                
-        //     }
-        // }
-        else {
-            return true;
-        }
         
     }
 
@@ -799,6 +845,37 @@ class BerkasController extends Controller
     //         return redirect(route('import'))->with('success','Berkas berhasil diimport');
 
     // }
+
+    public function uraiBTSU() {
+
+        $berkas = History::where('selesai',null)->where('proses_id',3)->get();
+
+        foreach ($berkas as $d) {
+                    History::where('id',$d->id)->update([
+                        'selesai' => date('Y-m-d H:i:s')
+                    ]);
+                    
+                    History::create([
+            
+                        'berkas_id' => $d->berkas_id,
+                        'proses_id' => 9,
+                        'dari' => Auth::id(),
+                        'user_id' => 28,
+                    ]);
+
+                    History::create([
+            
+                        'berkas_id' => $d->berkas_id,
+                        'proses_id' => 10,
+                        'dari' => Auth::id(),
+                        'user_id' => 28,
+                    ]);
+        }
+
+        return 'yaaa';
+    
+
+    }
 
 
 }
