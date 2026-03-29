@@ -3,255 +3,264 @@
 @section('content')
 
 
-<!-- Content -->
+    <!-- Content -->
 
 
 
-<div class="container-xxl flex-grow-1 container-p-y">
-  <div class="row">
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <div class="row">
 
-    <div class="col-12 mb-4 order-0">
-      
-      <div class="card">
-          <div class="card-header">
-              <h5 class="float-start">Laporan Tunggakan Seksi SP</h5>
-              
-          </div>
-          
-          <div class="card-body ">
+            <div class="col-12 mb-4 order-0">
 
-            
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="bg-white">#</th>
-                            <th class="bg-white">Proses</th>
-                            <th class="bg-white">Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $i=1;
-                            $total_tunggakan_sp = 0;
-                        @endphp
-                        @foreach ($dt_berkas as $d)
-                        @php
-                            $proses_sp = [1,4,5];
-                            if (!in_array($d->proses_id, $proses_sp)) {
-                              continue;
-                            }
-                            $total_tunggakan_sp += $d->jml;
-                        @endphp
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td>{{ $d->proses->nm_proses }}</td>                                
-                                <td class="text-center"><a class="btn_info" data-bs-toggle="modal" href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a></td>
-                                
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                      <tr class="text-center">
-                        <td colspan="2"><strong>Total</strong></td>
-                        <td><strong>{{ $total_tunggakan_sp }}</strong></td>
-                      </tr>
-                    </tfoot>
-                </table>
-            
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="float-start">Laporan Tunggakan Seksi SP</h5>
 
-          </div>
-          
+                    </div>
+
+                    <div class="card-body ">
+
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="bg-white">#</th>
+                                    <th class="bg-white">Proses</th>
+                                    <th class="bg-white">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $i = 1;
+                                    $total_tunggakan_sp = 0;
+                                @endphp
+                                @foreach ($dt_berkas as $d)
+                                    @php
+                                        $proses_sp = [1, 4, 5, 10];
+                                        if (!in_array($d->proses_id, $proses_sp)) {
+                                            continue;
+                                        }
+                                        $total_tunggakan_sp += $d->jml;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $d->proses->nm_proses }}</td>
+                                        <td class="text-center"><a class="btn_info" data-bs-toggle="modal"
+                                                href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="text-center">
+                                    <td colspan="2"><strong>Total</strong></td>
+                                    <td><strong>{{ $total_tunggakan_sp }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+
+                    </div>
+
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5 class="float-start">Laporan Tunggakan Seksi PHP</h5>
+
+                    </div>
+
+                    <div class="card-body ">
+
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="bg-white">#</th>
+                                    <th class="bg-white">Proses</th>
+                                    <th class="bg-white">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $i = 1;
+                                    $total_tunggakan_php = 0;
+                                @endphp
+                                @foreach ($dt_berkas as $d)
+                                    @php
+                                        $proses_php = [2, 3, 6, 9];
+                                        if (!in_array($d->proses_id, $proses_php)) {
+                                            continue;
+                                        }
+                                        $total_tunggakan_php += $d->jml;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $d->proses->nm_proses }}</td>
+                                        <td class="text-center"><a class="btn_info" data-bs-toggle="modal"
+                                                href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="text-center">
+                                    <td colspan="2"><strong>Total</strong></td>
+                                    <td><strong>{{ $total_tunggakan_php }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+
+                    </div>
+
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5 class="float-start">Laporan Tunggakan Loket</h5>
+
+                    </div>
+
+                    <div class="card-body ">
+
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="bg-white">#</th>
+                                    <th class="bg-white">Proses</th>
+                                    <th class="bg-white">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $i = 1;
+                                    $total_tunggakan_loket = 0;
+                                @endphp
+                                @foreach ($dt_berkas as $d)
+                                    @php
+                                        $proses_loket = [7];
+                                        if (!in_array($d->proses_id, $proses_loket)) {
+                                            continue;
+                                        }
+                                        $total_tunggakan_loket += $d->jml;
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $d->proses->nm_proses }}</td>
+                                        <td class="text-center"><a class="btn_info" data-bs-toggle="modal"
+                                                href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="text-center">
+                                    <td colspan="2"><strong>Total</strong></td>
+                                    <td><strong>{{ $total_tunggakan_loket }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5 class="float-start">Laporan Tunggakan Perpelayanan</h5>
+
+                    </div>
+
+                    <div class="card-body ">
+
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="bg-white">#</th>
+                                    <th class="bg-white">Pelayanan</th>
+                                    <th class="bg-white">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $i = 1;
+                                @endphp
+                                @foreach ($perpelayanan as $d)
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $d->pelayanan->nm_pelayanan }}</td>
+                                        <td class="text-center"><a class="btn_info_pelayanan" data-bs-toggle="modal"
+                                                href="#modal_info_pelayanan"
+                                                pelayanan_id="{{ $d->pelayanan_id }}">{{ $d->jml }}</a></td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <!-- Total Revenue -->
+
+            <!--/ Total Revenue -->
+
         </div>
-
-        <div class="card mt-3">
-          <div class="card-header">
-              <h5 class="float-start">Laporan Tunggakan Seksi PHP</h5>
-              
-          </div>
-          
-          <div class="card-body ">
-
-            
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="bg-white">#</th>
-                            <th class="bg-white">Proses</th>
-                            <th class="bg-white">Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $i=1;
-                            $total_tunggakan_php = 0;
-                        @endphp
-                        @foreach ($dt_berkas as $d)
-                        @php
-                            $proses_php = [2,3,6];
-                            if (!in_array($d->proses_id, $proses_php)) {
-                              continue;
-                            }
-                            $total_tunggakan_php += $d->jml;
-                        @endphp
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td>{{ $d->proses->nm_proses }}</td>                                
-                                <td class="text-center"><a class="btn_info" data-bs-toggle="modal" href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a></td>
-                                
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                      <tr class="text-center">
-                        <td colspan="2"><strong>Total</strong></td>
-                        <td><strong>{{ $total_tunggakan_php }}</strong></td>
-                      </tr>
-                    </tfoot>
-                </table>
-            
-
-          </div>
-          
-        </div>
-
-        <div class="card mt-3">
-          <div class="card-header">
-              <h5 class="float-start">Laporan Tunggakan Loket</h5>
-              
-          </div>
-          
-          <div class="card-body ">
-
-            
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="bg-white">#</th>
-                            <th class="bg-white">Proses</th>
-                            <th class="bg-white">Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $i=1;
-                            $total_tunggakan_loket = 0;
-                        @endphp
-                        @foreach ($dt_berkas as $d)
-                        @php
-                            $proses_loket = [7];
-                            if (!in_array($d->proses_id, $proses_loket)) {
-                              continue;
-                            }
-                            $total_tunggakan_loket += $d->jml;
-                        @endphp
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td>{{ $d->proses->nm_proses }}</td>                                
-                                <td class="text-center"><a class="btn_info" data-bs-toggle="modal" href="#modal_info" proses_id="{{ $d->proses_id }}">{{ $d->jml }}</a></td>
-                                
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                      <tr class="text-center">
-                        <td colspan="2"><strong>Total</strong></td>
-                        <td><strong>{{ $total_tunggakan_loket }}</strong></td>
-                      </tr>
-                    </tfoot>
-                </table>
-            
-
-          </div>
-          
-        </div>
-
-
-        <div class="card mt-3">
-          <div class="card-header">
-              <h5 class="float-start">Laporan Tunggakan Perpelayanan</h5>
-              
-          </div>
-          
-          <div class="card-body ">
-
-            
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th class="bg-white">#</th>
-                            <th class="bg-white">Pelayanan</th>
-                            <th class="bg-white">Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $i=1;
-                        @endphp
-                        @foreach ($perpelayanan as $d)
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td>{{ $d->pelayanan->nm_pelayanan }}</td>                                
-                                <td class="text-center"><a class="btn_info_pelayanan" data-bs-toggle="modal" href="#modal_info_pelayanan" pelayanan_id="{{ $d->pelayanan_id }}">{{ $d->jml }}</a></td>
-                                
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            
-
-          </div>
-          
-        </div>
-
 
     </div>
-
-    <!-- Total Revenue -->
-
-    <!--/ Total Revenue -->
-    
-  </div>
-
-</div>
-<!-- / Content -->
-
-    
-
-  <!-- Modal -->
+    <!-- / Content -->
 
 
 
-  <div class="modal fade" id="modal_info" tabindex="-1" aria-labelledby="modal_infoLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modal_infoLabel">Tunggakan Perproses</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal -->
+
+
+
+    <div class="modal fade" id="modal_info" tabindex="-1" aria-labelledby="modal_infoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_infoLabel">Tunggakan Perproses</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="table_info">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body" id="table_info">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <div class="modal fade" id="modal_info_pelayanan" tabindex="-1" aria-labelledby="modal_info_pelayananLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modal_info_pelayananLabel">Tunggakan Perproses</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="modal_info_pelayanan" tabindex="-1" aria-labelledby="modal_info_pelayananLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_info_pelayananLabel">Tunggakan Perproses</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="table_info_pelayanan">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-        <div class="modal-body" id="table_info_pelayanan">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
     </div>
-  </div>
 
 
 
@@ -259,11 +268,10 @@
 
 
 
-  @section('script')
+@section('script')
+    <script src="{{ asset('js') }}/qrcode.js" type="text/javascript"></script>
 
-  <script src="{{ asset('js') }}/qrcode.js" type="text/javascript"></script>
-
-  {{-- <script>
+    {{-- <script>
     function getKecamatan(data){
               const dt_kecamatan_id = data.value;
               if (dt_kecamatan_id == '') {
@@ -286,8 +294,8 @@
 
   </script> --}}
 
-      <script>
-        $(document).ready(function () {
+    <script>
+        $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -295,13 +303,15 @@
             });
         });
 
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $(document).on('click', '.btn_info', function() {
 
                 var proses_id = $(this).attr('proses_id');
-                $('#table_info').html('<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>');
-                $.get('getLaporanPerproses/' + proses_id, function (data) {
+                $('#table_info').html(
+                    '<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>'
+                    );
+                $.get('getLaporanPerproses/' + proses_id, function(data) {
                     $('#table_info').html(data);
                 });
 
@@ -310,49 +320,47 @@
             $(document).on('click', '.btn_info_pelayanan', function() {
 
                 var pelayanan_id = $(this).attr('pelayanan_id');
-                $('#table_info_pelayanan').html('<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>');
-                $.get('getLaporanPerpelayanan/' + pelayanan_id, function (data) {
+                $('#table_info_pelayanan').html(
+                    '<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>'
+                    );
+                $.get('getLaporanPerpelayanan/' + pelayanan_id, function(data) {
                     $('#table_info_pelayanan').html(data);
                 });
 
             });
 
 
-        //   $(document).on('submit', '#form_informasi_berkas', function(event) {
-        //         event.preventDefault();
+            //   $(document).on('submit', '#form_informasi_berkas', function(event) {
+            //         event.preventDefault();
 
-        //             $('#btn_info_berkas').attr('disabled',true);
-        //             $('#btn_info_berkas').html('Loading..');
-        //             $('#table_info_berkas').html('<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>');
+            //             $('#btn_info_berkas').attr('disabled',true);
+            //             $('#btn_info_berkas').html('Loading..');
+            //             $('#table_info_berkas').html('<div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div>');
 
-        //             $.ajax({
-        //                 url:"{{ route('dtInfoBerkas') }}",
-        //                 method: 'POST',
-        //                 data: new FormData(this),
-        //                 contentType: false,
-        //                 processData: false,
-        //                 success: function(data) {
+            //             $.ajax({
+            //                 url:"{{ route('dtInfoBerkas') }}",
+            //                 method: 'POST',
+            //                 data: new FormData(this),
+            //                 contentType: false,
+            //                 processData: false,
+            //                 success: function(data) {
 
-                            
-        //                     $('#table_info_berkas').html(data);
-        //                     $("#btn_info_berkas").removeAttr("disabled");
-        //                     $('#btn_info_berkas').html('<i class="bx bx-search-alt"></i> Cari'); //tombol
-                                                        
-        //                 },
-        //                 error: function (data) { //jika error tampilkan error pada console
-        //                             console.log('Error:', data);
-        //                             $("#btn_info_berkas").removeAttr("disabled");
-        //                             $('#btn_info_berkas').html('<i class="bx bx-search-alt"></i> Cari'); //tombol
-        //                         }
-        //             });
 
-        //         });
+            //                     $('#table_info_berkas').html(data);
+            //                     $("#btn_info_berkas").removeAttr("disabled");
+            //                     $('#btn_info_berkas').html('<i class="bx bx-search-alt"></i> Cari'); //tombol
+
+            //                 },
+            //                 error: function (data) { //jika error tampilkan error pada console
+            //                             console.log('Error:', data);
+            //                             $("#btn_info_berkas").removeAttr("disabled");
+            //                             $('#btn_info_berkas').html('<i class="bx bx-search-alt"></i> Cari'); //tombol
+            //                         }
+            //             });
+
+            //         });
 
         });
-
-        
-
-      </script>
-  @endsection
+    </script>
 @endsection
-
+@endsection

@@ -23,9 +23,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class BerkasController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
-        return view('berkas.index',[
+        return view('berkas.index', [
             'title' => 'Input Berkas',
             'kecamatan' => Kecamatan::all(),
             'kelurahan' => Kelurahan::all(),
@@ -34,34 +35,35 @@ class BerkasController extends Controller
         ]);
     }
 
-    public function getKelurahan($kecamatan_id){
+    public function getKelurahan($kecamatan_id)
+    {
         if ($kecamatan_id == 0) {
             $dt_kelurahan = Kelurahan::all();
-        }else{
-            $dt_kelurahan = Kelurahan::where('kecamatan_id',$kecamatan_id)->get();
-        }
-        
-            echo '<option value="">Pilih kelurahan</option>';
-        foreach ($dt_kelurahan as $d) {
-            echo '<option value="'.$d->id.'|'.$d->kecamatan_id.'">'.$d->nm_kelurahan.' ('.$d->kecamatan->nm_kecamatan.')</option>';
+        } else {
+            $dt_kelurahan = Kelurahan::where('kecamatan_id', $kecamatan_id)->get();
         }
 
+        echo '<option value="">Pilih kelurahan</option>';
+        foreach ($dt_kelurahan as $d) {
+            echo '<option value="' . $d->id . '|' . $d->kecamatan_id . '">' . $d->nm_kelurahan . ' (' . $d->kecamatan->nm_kecamatan . ')</option>';
+        }
     }
 
-    public function addBerkas(Request $request){
+    public function addBerkas(Request $request)
+    {
 
-        $cek = Berkas::where('no_hak',sprintf("%05d", $request->no_hak))->where('kecamatan_id',$request->kecamatan_id)->where('kelurahan_id',$request->kelurahan_id)->where('jenis_hak_id',$request->jenis_hak_id)->where('selesai','!=',2)->first();
+        $cek = Berkas::where('no_hak', sprintf("%05d", $request->no_hak))->where('kecamatan_id', $request->kecamatan_id)->where('kelurahan_id', $request->kelurahan_id)->where('jenis_hak_id', $request->jenis_hak_id)->where('selesai', '!=', 2)->first();
 
         if ($cek) {
             return false;
         } else {
 
-            if($request->hasFile('file_name')){
-                $name_file = strtoupper(Str::random(5)).date('Ymd');
+            if ($request->hasFile('file_name')) {
+                $name_file = strtoupper(Str::random(5)) . date('Ymd');
                 $extension = $request->file('file_name')->extension();
-                $file_name = $name_file.'.'.$extension;
-                $request->file('file_name')->move('scan/',$file_name);
-            }else{
+                $file_name = $name_file . '.' . $extension;
+                $request->file('file_name')->move('scan/', $file_name);
+            } else {
                 $file_name = null;
             }
 
@@ -79,10 +81,10 @@ class BerkasController extends Controller
                 'nib' => $request->nib,
                 'file_name' => $file_name
             ]);
-            
-    
+
+
             History::create([
-            
+
                 'berkas_id' => $berkas->id,
                 'proses_id' => 1,
                 'dari' => Auth::id(),
@@ -91,21 +93,19 @@ class BerkasController extends Controller
             ]);
 
             History::create([
-            
+
                 'berkas_id' => $berkas->id,
                 'proses_id' => 2,
                 'dari' => Auth::id(),
             ]);
-    
+
             return true;
         }
-        
-
-        
     }
 
-    public function listBerkas(){
-        return view('berkas.list_berkas',[
+    public function listBerkas()
+    {
+        return view('berkas.list_berkas', [
             'title' => 'Daftar Berkas',
         ]);
     }
@@ -123,105 +123,124 @@ class BerkasController extends Controller
         // )
         // ->where('user_id',Auth::id())->where('buka_validasi_bt',1)->where('buka_validasi_su',1)->where('selesai',0)->orderBy('percepatan','DESC')->orderBy('id','ASC')->with(['kecamatan','kelurahan','proses','jenis_hak','dari']);
 
-        $pengajuan = History::select('history.proses_id','history.berkas_id','history.id','history.ket','history.user_id','history.dari')->selectRaw("dt_berkas.nm_kecamatan,dt_berkas.nm_kelurahan, dt_berkas.dt_hak, dt_berkas.no_hak, dt_berkas.dt_peta, dt_berkas.nib, dt_berkas.nm_pemohon, dt_berkas.tanggal, dt_berkas.percepatan, dt_berkas.file_name, dt_berkas.lama_tgl, dt_induk.ket_induk, dt_induk.induk_selesai, dt_berkas.nm_pelayanan")
-        ->leftJoin(
-            DB::raw("(SELECT berkas.*, nm_kecamatan, nm_kelurahan, nm_pelayanan, CONCAT(DATE_FORMAT(berkas.created_at, '%d-%m-%Y'),'<br>',IF(berkas.ket IS NOT NULL, berkas.ket,'')) as tanggal, CONCAT(kode_hak,'-',no_hak) as dt_hak, CONCAT(nm_jenis_peta,'-',no_peta,'-',tahun_peta) as dt_peta, datediff(current_date(), berkas.created_at) as lama_tgl FROM berkas 
+        $pengajuan = History::select('history.proses_id', 'history.berkas_id', 'history.id', 'history.ket', 'history.user_id', 'history.dari')->selectRaw("dt_berkas.nm_kecamatan,dt_berkas.nm_kelurahan, dt_berkas.dt_hak, dt_berkas.no_hak, dt_berkas.dt_peta, dt_berkas.nib, dt_berkas.nm_pemohon, dt_berkas.tanggal, dt_berkas.percepatan, dt_berkas.file_name, dt_berkas.lama_tgl, dt_induk.ket_induk, dt_induk.induk_selesai, dt_berkas.nm_pelayanan")
+            ->leftJoin(
+                DB::raw("(SELECT berkas.*, nm_kecamatan, nm_kelurahan, nm_pelayanan, CONCAT(DATE_FORMAT(berkas.created_at, '%d-%m-%Y'),'<br>',IF(berkas.ket IS NOT NULL, berkas.ket,'')) as tanggal, CONCAT(kode_hak,'-',no_hak) as dt_hak, CONCAT(nm_jenis_peta,'-',no_peta,'-',tahun_peta) as dt_peta, datediff(current_date(), berkas.created_at) as lama_tgl FROM berkas 
             LEFT JOIN kecamatan ON berkas.kecamatan_id = kecamatan.id
             LEFT JOIN kelurahan ON berkas.kelurahan_id = kelurahan.id
             LEFT JOIN pelayanan ON berkas.pelayanan_id = pelayanan.id
             LEFT JOIN jenis_hak ON berkas.jenis_hak_id = jenis_hak.id
             LEFT JOIN jenis_peta ON berkas.jenis_peta_id = jenis_peta.id
-            GROUP BY id) dt_berkas"), 
-                'history.berkas_id', '=', 'dt_berkas.id'
-        )
-        ->leftJoin(
-            DB::raw("(SELECT berkas.id, berkas.selesai as induk_selesai, CONCAT('Alih media induk ',jenis_hak.nm_hak,' ',berkas.no_hak) as ket_induk FROM berkas LEFT JOIN jenis_hak ON berkas.jenis_hak_id = jenis_hak.id GROUP BY id) dt_induk"), 
-                'dt_berkas.induk_id', '=', 'dt_induk.id'
-        )
-        ->whereIn('history.proses_id',Session::get('aksesProses'))
-        ->where(function($query){
-            $query->where('history.user_id',Auth::id())->orWhere('history.user_id',0);
-        })
-        ->where('history.selesai',null)->groupBy('history.berkas_id')->groupBy('history.proses_id')->orderBy('user_id','DESC')->orderBy('berkas_id','ASC')->with(['proses','user']);
+            GROUP BY id) dt_berkas"),
+                'history.berkas_id',
+                '=',
+                'dt_berkas.id'
+            )
+            ->leftJoin(
+                DB::raw("(SELECT berkas.id, berkas.selesai as induk_selesai, CONCAT('Alih media induk ',jenis_hak.nm_hak,' ',berkas.no_hak) as ket_induk FROM berkas LEFT JOIN jenis_hak ON berkas.jenis_hak_id = jenis_hak.id GROUP BY id) dt_induk"),
+                'dt_berkas.induk_id',
+                '=',
+                'dt_induk.id'
+            )
+            ->whereIn('history.proses_id', Session::get('aksesProses'))
+            ->where(function ($query) {
+                $query->where('history.user_id', Auth::id())->orWhere('history.user_id', 0);
+            })
+            ->where('history.selesai', null)->groupBy('history.berkas_id')->groupBy('history.proses_id')->orderBy('user_id', 'DESC')->orderBy('berkas_id', 'ASC')->with(['proses', 'user']);
 
         return datatables()->of($pengajuan)
-                        ->addColumn('action', function($data){
-                            $proses_id = $data->proses_id;
-                            
-                            $button = '';
+            ->addColumn('action', function ($data) {
+                $proses_id = $data->proses_id;
 
-                            // if ($data->proses_id == 6) {
-                            //     if ($data->induk_selesai == '') {
-                            //         $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
-    
-                            //         if ($data->proses->kembali) {
-                            //             $button .= '<br>';
-                            //             $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_kembali" class="btn btn-xs btn-warning kembali mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" ><i class="bx bx-reset"></i></button>';
-                            //         }
-                            //     }else {
-                            //         if ($data->induk_selesai == 0) {
-                            //             $button .= '<span class="text-danger" style="font-size: 10px;;">'.$data->ket_induk.'</span>';
-                            //         } else {
-                            //             $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
-                            //         }
-                                    
-                                    
-                            //     }
-                            // }elseif($data->proses_id == 7){
-                            //     $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_nibel" class="btn btn-xs btn-primary nibel mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
-                            // }else{
-                            //     $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
-                            // }
+                $button = '';
 
-                            $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
+                // if ($data->proses_id == 6) {
+                //     if ($data->induk_selesai == '') {
+                //         $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
+
+                //         if ($data->proses->kembali) {
+                //             $button .= '<br>';
+                //             $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_kembali" class="btn btn-xs btn-warning kembali mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" ><i class="bx bx-reset"></i></button>';
+                //         }
+                //     }else {
+                //         if ($data->induk_selesai == 0) {
+                //             $button .= '<span class="text-danger" style="font-size: 10px;;">'.$data->ket_induk.'</span>';
+                //         } else {
+                //             $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
+                //         }
 
 
-                            $button .= '<br>';
-                            $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_keterangan" class="btn btn-xs btn-success keterangan mt-2 mr-2" berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" ><i class="bx bxs-message-dots"></i></button>';
+                //     }
+                // }elseif($data->proses_id == 7){
+                //     $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_nibel" class="btn btn-xs btn-primary nibel mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
+                // }else{
+                //     $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="'.$data->berkas_id .'" history_id="'.$data->id .'" jenis="'.$data->proses->jenis .'" proses_id="'.$proses_id.'" ><i class="bx bx-send"></i></button>';
+                // }
 
-                            if ($data->file_name != NULL) {
-                                $button .= '<br>';
-                            $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_upload" class="btn btn-xs btn-info file_name mt-2 mr-2"  file_name="'.$data->file_name .'" ><i class="bx bxs-file-find"></i></button>';
-                            }
+                $button .= '<button class="btn btn-xs btn-primary kirim mt-2 mr-2"  berkas_id="' . $data->berkas_id . '" history_id="' . $data->id . '" jenis="' . $data->proses->jenis . '" proses_id="' . $proses_id . '" ><i class="bx bx-send"></i></button>';
 
-                            if ($data->user_id == 0) {
-                                $button .= '<br>';
-                                $button .= '<button class="btn btn-xs btn-secondary kunci mt-2 mr-2"  history_id="'.$data->id .'" ><i class="bx bxs-lock-open-alt"></i></button>';
-                            }else{
-                                $button .= '<br>';
-                                $button .= '<button class="btn btn-xs btn-warning buka_kunci mt-2 mr-2"  history_id="'.$data->id .'" ><i class="bx bxs-lock" ></i></button>';
-                            }
 
-                            
-                            return $button;
-                            
-                        })
+                $button .= '<br>';
+                $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_keterangan" class="btn btn-xs btn-success keterangan mt-2 mr-2" berkas_id="' . $data->berkas_id . '" history_id="' . $data->id . '" ><i class="bx bxs-message-dots"></i></button>';
 
-                        ->setRowClass(function ($data) {
-                            return $data->lama_tgl > 7 ? 'blink' : '';
-                        })
-                        
-                        ->rawColumns(['tanggal','action'])                        
-                        ->addIndexColumn()
-                        ->make(true);
+                if ($data->file_name != NULL) {
+                    $button .= '<br>';
+                    $button .= '<button data-bs-toggle="modal" data-bs-target="#modal_upload" class="btn btn-xs btn-info file_name mt-2 mr-2"  file_name="' . $data->file_name . '" ><i class="bx bxs-file-find"></i></button>';
+                }
+
+                if ($data->user_id == 0) {
+                    $button .= '<br>';
+                    $button .= '<button class="btn btn-xs btn-secondary kunci mt-2 mr-2"  history_id="' . $data->id . '" ><i class="bx bxs-lock-open-alt"></i></button>';
+                } else {
+                    $button .= '<br>';
+                    $button .= '<button class="btn btn-xs btn-warning buka_kunci mt-2 mr-2"  history_id="' . $data->id . '" ><i class="bx bxs-lock" ></i></button>';
+                }
+
+                if (Auth::id() == 1 && ($proses_id == 4 || $proses_id == 5 || $proses_id == 6)) {
+                    $button .= '<br>';
+                    $button .= '<div class="btn-group" role="group">
+                                    <button id="btn_kembali' . $data->id . '" type="button" class="btn btn-xs mt-2 mr-2 btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Kembalikan
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <li><a class="dropdown-item kembali_su" href="javascript:void(0)" berkas_id="' . $data->berkas_id . '" history_id="' . $data->id . '" jenis="' . $data->proses->jenis . '" proses_id="' . $proses_id . '" >Pencarian & Upload SU</a></li>
+                                    <li><a class="dropdown-item Kembali_bt" href="javascript:void(0)" berkas_id="' . $data->berkas_id . '" history_id="' . $data->id . '" jenis="' . $data->proses->jenis . '" proses_id="' . $proses_id . '" >Pencarian & Upload BT</a></li>
+                                    </ul>
+                                </div>';
+                }
+
+
+                return $button;
+            })
+
+            ->setRowClass(function ($data) {
+                return $data->lama_tgl > 7 ? 'blink' : '';
+            })
+
+            ->rawColumns(['tanggal', 'action'])
+            ->addIndexColumn()
+            ->make(true);
     }
 
-    public function exportExcel(){
-        $berkas = History::select('history.proses_id','history.berkas_id','history.id','history.ket','history.user_id')->selectRaw("dt_berkas.nm_kecamatan,dt_berkas.nm_kelurahan, dt_berkas.kode_hak, dt_berkas.no_hak, dt_berkas.dt_peta, dt_berkas.nib, dt_berkas.nm_pemohon, dt_berkas.tanggal, dt_berkas.percepatan, dt_berkas.file_name, dt_berkas.lama_tgl")
-        ->leftJoin(
-            DB::raw("(SELECT berkas.*, nm_kecamatan, nm_kelurahan, DATE_FORMAT(berkas.created_at, '%d-%m-%Y') as tanggal,kode_hak, CONCAT(nm_jenis_peta,'-',no_peta,'-',tahun_peta) as dt_peta, datediff(current_date(), berkas.created_at) as lama_tgl FROM berkas 
+    public function exportExcel()
+    {
+        $berkas = History::select('history.proses_id', 'history.berkas_id', 'history.id', 'history.ket', 'history.user_id')->selectRaw("dt_berkas.nm_kecamatan,dt_berkas.nm_kelurahan, dt_berkas.kode_hak, dt_berkas.no_hak, dt_berkas.dt_peta, dt_berkas.nib, dt_berkas.nm_pemohon, dt_berkas.tanggal, dt_berkas.percepatan, dt_berkas.file_name, dt_berkas.lama_tgl")
+            ->leftJoin(
+                DB::raw("(SELECT berkas.*, nm_kecamatan, nm_kelurahan, DATE_FORMAT(berkas.created_at, '%d-%m-%Y') as tanggal,kode_hak, CONCAT(nm_jenis_peta,'-',no_peta,'-',tahun_peta) as dt_peta, datediff(current_date(), berkas.created_at) as lama_tgl FROM berkas 
             LEFT JOIN kecamatan ON berkas.kecamatan_id = kecamatan.id
             LEFT JOIN kelurahan ON berkas.kelurahan_id = kelurahan.id
             LEFT JOIN jenis_hak ON berkas.jenis_hak_id = jenis_hak.id
             LEFT JOIN jenis_peta ON berkas.jenis_peta_id = jenis_peta.id
-            GROUP BY id) dt_berkas"), 
-                'history.berkas_id', '=', 'dt_berkas.id'
-        )
-        ->whereIn('history.proses_id',Session::get('aksesProses'))
-        ->where(function($query){
-            $query->where('history.user_id',Auth::id())->orWhere('history.user_id',0);
-        })
-        ->where('history.selesai',null)->groupBy('history.berkas_id')->groupBy('history.proses_id')->orderBy('user_id','DESC')->orderBy('berkas_id','ASC')->with('proses')->get();
+            GROUP BY id) dt_berkas"),
+                'history.berkas_id',
+                '=',
+                'dt_berkas.id'
+            )
+            ->whereIn('history.proses_id', Session::get('aksesProses'))
+            ->where(function ($query) {
+                $query->where('history.user_id', Auth::id())->orWhere('history.user_id', 0);
+            })
+            ->where('history.selesai', null)->groupBy('history.berkas_id')->groupBy('history.proses_id')->orderBy('user_id', 'DESC')->orderBy('berkas_id', 'ASC')->with('proses')->get();
 
         $spreadsheet = new Spreadsheet;
 
@@ -279,14 +298,14 @@ class BerkasController extends Controller
 
         $batas = $kolom - 1;
 
-            $border_collom = array(
-                'borders' => array(
-                    'allBorders' => array(
-                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    ),
-                )
-            );
-        
+        $border_collom = array(
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            )
+        );
+
         $spreadsheet->getActiveSheet()->getStyle('A1:J' . $batas)->applyFromArray($border_collom);
 
         $writer = new Xlsx($spreadsheet);
@@ -296,10 +315,9 @@ class BerkasController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
-
     }
 
-    
+
 
     // public function getKirim($proses_id,$history_id){
     //     // $dt_proses = Proses::where('id',$proses_id)->first();
@@ -323,11 +341,11 @@ class BerkasController extends Controller
     //     else {
     //         # code...
     //     }
-        
 
 
-         
-        
+
+
+
     //     return view('berkas.get_kirim',[
     //         'user' => $user,
     //         'proses' => $proses,
@@ -345,7 +363,7 @@ class BerkasController extends Controller
 
     //         if (!$cek) {
     //             History::create([
-        
+
     //                 'berkas_id' => $berkas_id,
     //                 'proses_id' => 3,
     //                 'dari' => Auth::id(),
@@ -359,14 +377,14 @@ class BerkasController extends Controller
     //         ]);
 
     //         History::create([
-        
+
     //             'berkas_id' => $berkas_id,
     //             'proses_id' => 4,
     //             'dari' => Auth::id(),
     //         ]);
 
     //         History::create([
-        
+
     //             'berkas_id' => $berkas_id,
     //             'proses_id' => 6,
     //             'dari' => Auth::id(),
@@ -378,7 +396,7 @@ class BerkasController extends Controller
     //         ]);
 
     //         History::create([
-        
+
     //             'berkas_id' => $berkas_id,
     //             'proses_id' => $proses_id + 1,
     //             'dari' => Auth::id(),
@@ -392,7 +410,7 @@ class BerkasController extends Controller
 
     //         if (!$cek) {
     //             History::create([
-        
+
     //                 'berkas_id' => $berkas_id,
     //                 'proses_id' => 8,
     //                 'dari' => Auth::id(),
@@ -408,55 +426,56 @@ class BerkasController extends Controller
     //                 'file_name' => null,
     //             ]);
 
-                
+
     //         }
     //     }else {
     //         return true;
     //     }
-        
+
     // }
-    
-    public function krimBerkas($jenis,$history_id,$berkas_id,$proses_id){
+
+    public function krimBerkas($jenis, $history_id, $berkas_id, $proses_id)
+    {
 
         if ($proses_id == 3) {
-                History::where('id',$history_id)->update([
-                    'selesai' => date('Y-m-d H:i:s')
-                ]);
+            History::where('id', $history_id)->update([
+                'selesai' => date('Y-m-d H:i:s')
+            ]);
 
-                History::create([
-        
-                    'berkas_id' => $berkas_id,
-                    'proses_id' => 9,
-                    'dari' => Auth::id(),
-                    'user_id' => 28,
-                ]);
+            History::create([
 
-                History::create([
-        
-                    'berkas_id' => $berkas_id,
-                    'proses_id' => 10,
-                    'dari' => Auth::id(),
-                    'user_id' => 28,
-                ]);
-        }else{
+                'berkas_id' => $berkas_id,
+                'proses_id' => 9,
+                'dari' => Auth::id(),
+                'user_id' => 28,
+            ]);
+
+            History::create([
+
+                'berkas_id' => $berkas_id,
+                'proses_id' => 10,
+                'dari' => Auth::id(),
+                'user_id' => 28,
+            ]);
+        } else {
 
             if ($jenis == 1) {
-                History::where('id',$history_id)->update([
+                History::where('id', $history_id)->update([
                     'selesai' => date('Y-m-d H:i:s'),
                     'user_id' => Auth::id(),
                 ]);
-                $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+                $cek = History::where('berkas_id', $berkas_id)->where('selesai', null)->first();
 
                 if (!$cek) {
                     // History::create([
-            
+
                     //     'berkas_id' => $berkas_id,
                     //     'proses_id' => 3,
                     //     'dari' => Auth::id(),
                     //     'user_id' => 28,
                     // ]);
                     History::create([
-            
+
                         'berkas_id' => $berkas_id,
                         'proses_id' => 9,
                         'dari' => Auth::id(),
@@ -464,72 +483,68 @@ class BerkasController extends Controller
                     ]);
 
                     History::create([
-            
+
                         'berkas_id' => $berkas_id,
                         'proses_id' => 10,
                         'dari' => Auth::id(),
                         'user_id' => 28,
                     ]);
                 }
-
             } elseif ($jenis == 2) {
-                History::where('id',$history_id)->update([
+                History::where('id', $history_id)->update([
                     'selesai' => date('Y-m-d H:i:s')
                 ]);
 
-                $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+                $cek = History::where('berkas_id', $berkas_id)->where('selesai', null)->first();
 
                 if (!$cek) {
                     History::create([
-            
+
                         'berkas_id' => $berkas_id,
                         'proses_id' => 4,
                         'dari' => Auth::id(),
                     ]);
 
                     History::create([
-                
+
                         'berkas_id' => $berkas_id,
                         'proses_id' => 6,
                         'dari' => Auth::id(),
                     ]);
                 }
-
             } elseif ($jenis == 3) {
-                History::where('id',$history_id)->update([
+                History::where('id', $history_id)->update([
                     'selesai' => date('Y-m-d H:i:s'),
                     'user_id' => Auth::id(),
                 ]);
 
-                $cek = History::where('berkas_id',$berkas_id)->where('selesai',null)->first();
+                $cek = History::where('berkas_id', $berkas_id)->where('selesai', null)->first();
 
                 if (!$cek) {
                     History::create([
-            
+
                         'berkas_id' => $berkas_id,
                         'proses_id' => 7,
                         'dari' => Auth::id(),
                         'user_id' => 29,
                         // 'selesai' => date('Y-m-d H:i:s')
                     ]);
-
-                    
                 }
 
                 // History::create([
-            
+
                 //     'berkas_id' => $berkas_id,
                 //     'proses_id' => $proses_id + 1,
                 //     'dari' => Auth::id(),
                 // ]);
-            }elseif($jenis == 6){
-                History::where('id',$history_id)->update([
+            } elseif ($jenis == 6) {
+                History::where('id', $history_id)->update([
                     'selesai' => date('Y-m-d H:i:s'),
                     'user_id' => Auth::id(),
                 ]);
 
                 History::create([
-            
+
                     'berkas_id' => $berkas_id,
                     'proses_id' => 8,
                     'dari' => Auth::id(),
@@ -537,14 +552,13 @@ class BerkasController extends Controller
                     'selesai' => date('Y-m-d H:i:s')
                 ]);
 
-                Berkas::where('id',$berkas_id)->update([
+                Berkas::where('id', $berkas_id)->update([
                     'selesai' => 1
                 ]);
 
-                $dt_berkas = Berkas::where('id',$berkas_id)->frist();
+                $dt_berkas = Berkas::where('id', $berkas_id)->frist();
 
-                File::delete('scan/'.$dt_berkas->file_name);
-
+                File::delete('scan/' . $dt_berkas->file_name);
             }
             // elseif ($jenis == 4) {
             //     History::where('id',$history_id)->update([
@@ -555,7 +569,7 @@ class BerkasController extends Controller
 
             //     if (!$cek) {
             //         History::create([
-            
+
             //             'berkas_id' => $berkas_id,
             //             'proses_id' => 8,
             //             'dari' => Auth::id(),
@@ -571,34 +585,31 @@ class BerkasController extends Controller
             //             'file_name' => null,
             //         ]);
 
-                    
+
             //     }
             // }
             else {
                 return true;
             }
-
         }
-
-        
-        
     }
 
-    public function pengesahanBt(Request $request){
-        History::where('id',$request->history_id)->update([
+    public function pengesahanBt(Request $request)
+    {
+        History::where('id', $request->history_id)->update([
             'selesai' => date('Y-m-d H:i:s'),
             'user_id' => Auth::id(),
         ]);
 
-        Berkas::where('id',$request->berkas_id)->update([
+        Berkas::where('id', $request->berkas_id)->update([
             'nibel' => $request->nibel,
         ]);
 
-        $cek = History::where('berkas_id',$request->berkas_id)->where('selesai',null)->first();
+        $cek = History::where('berkas_id', $request->berkas_id)->where('selesai', null)->first();
 
         if (!$cek) {
             History::create([
-    
+
                 'berkas_id' => $request->berkas_id,
                 'proses_id' => 8,
                 'dari' => Auth::id(),
@@ -606,29 +617,31 @@ class BerkasController extends Controller
                 'selesai' => date('Y-m-d H:i:s')
             ]);
 
-            Berkas::where('id',$request->berkas_id)->update([
+            Berkas::where('id', $request->berkas_id)->update([
                 'selesai' => 1
             ]);
         }
     }
 
-    public function getKembali($berkas_id){
-        
-        
-        return view('berkas.get_kembali',[
+    public function getKembali($berkas_id)
+    {
+
+
+        return view('berkas.get_kembali', [
             'jenis_hak' => JenisHak::all(),
-            'berkas' => Berkas::where('id',$berkas_id)->first(),
+            'berkas' => Berkas::where('id', $berkas_id)->first(),
             'berkas_id' => $berkas_id,
         ]);
     }
 
 
-    public function kembaliBerkas(Request $request){
+    public function kembaliBerkas(Request $request)
+    {
 
-        $cek = Berkas::where('no_hak',sprintf("%05d", $request->no_hak))->where('kecamatan_id',$request->kecamatan_id)->where('kelurahan_id',$request->kelurahan_id)->where('jenis_hak_id',$request->jenis_hak_id)->first();
+        $cek = Berkas::where('no_hak', sprintf("%05d", $request->no_hak))->where('kecamatan_id', $request->kecamatan_id)->where('kelurahan_id', $request->kelurahan_id)->where('jenis_hak_id', $request->jenis_hak_id)->first();
 
         if ($cek) {
-            Berkas::where('id',$request->berkas_id)->update([
+            Berkas::where('id', $request->berkas_id)->update([
                 'induk_id' => $cek->id,
             ]);
 
@@ -647,33 +660,32 @@ class BerkasController extends Controller
                 'jenis_peta_id' => $request->jenis_peta_id,
                 'nib' => $request->nib,
             ]);
-    
+
             History::create([
-                
+
                 'berkas_id' => $berkas->id,
                 'proses_id' => 1,
                 'dari' => Auth::id(),
             ]);
-    
+
             History::create([
-            
+
                 'berkas_id' => $berkas->id,
                 'proses_id' => 2,
                 'dari' => Auth::id(),
             ]);
-    
-            Berkas::where('id',$request->berkas_id)->update([
+
+            Berkas::where('id', $request->berkas_id)->update([
                 'induk_id' => $berkas->id,
             ]);
-    
+
             return true;
         }
-        
-
     }
 
-    public function bukaValidasi(){
-        return view('berkas.buka_validasi',[
+    public function bukaValidasi()
+    {
+        return view('berkas.buka_validasi', [
             'title' => 'Daftar Berkas',
         ]);
     }
@@ -684,71 +696,75 @@ class BerkasController extends Controller
         $seksi_id = Auth::user()->seksi_id;
         if ($seksi_id == 2) {
             $pengajuan = Berkas::query()->select('berkas.*')->selectRaw("dt_berkas.tanggal, dt_berkas.asal_berkas, 2 as seksi_id")
-            ->leftJoin(
-                DB::raw("(SELECT berkas.id, DATE_FORMAT(berkas.updated_at, '%d-%m-%Y') as tanggal, users.name as asal_berkas FROM berkas LEFT JOIN users ON berkas.dari = users.id GROUP BY id) dt_berkas"), 
-                    'berkas.id', '=', 'dt_berkas.id'
-            )->where('buka_validasi_bt',0,Auth::id())->orderBy('percepatan','DESC')->orderBy('id','ASC')->with(['kecamatan','kelurahan','proses','jenis_hak','dari']);
+                ->leftJoin(
+                    DB::raw("(SELECT berkas.id, DATE_FORMAT(berkas.updated_at, '%d-%m-%Y') as tanggal, users.name as asal_berkas FROM berkas LEFT JOIN users ON berkas.dari = users.id GROUP BY id) dt_berkas"),
+                    'berkas.id',
+                    '=',
+                    'dt_berkas.id'
+                )->where('buka_validasi_bt', 0, Auth::id())->orderBy('percepatan', 'DESC')->orderBy('id', 'ASC')->with(['kecamatan', 'kelurahan', 'proses', 'jenis_hak', 'dari']);
         } else {
             $pengajuan = Berkas::query()->select('berkas.*')->selectRaw("dt_berkas.tanggal, dt_berkas.asal_berkas, 3 as seksi_id")
-            ->leftJoin(
-                DB::raw("(SELECT berkas.id, DATE_FORMAT(berkas.updated_at, '%d-%m-%Y') as tanggal, users.name as asal_berkas FROM berkas LEFT JOIN users ON berkas.dari = users.id GROUP BY id) dt_berkas"), 
-                    'berkas.id', '=', 'dt_berkas.id'
-            )->where('buka_validasi_su',0,Auth::id())->orderBy('percepatan','DESC')->orderBy('id','ASC')->with(['kecamatan','kelurahan','proses','jenis_hak','dari']);
+                ->leftJoin(
+                    DB::raw("(SELECT berkas.id, DATE_FORMAT(berkas.updated_at, '%d-%m-%Y') as tanggal, users.name as asal_berkas FROM berkas LEFT JOIN users ON berkas.dari = users.id GROUP BY id) dt_berkas"),
+                    'berkas.id',
+                    '=',
+                    'dt_berkas.id'
+                )->where('buka_validasi_su', 0, Auth::id())->orderBy('percepatan', 'DESC')->orderBy('id', 'ASC')->with(['kecamatan', 'kelurahan', 'proses', 'jenis_hak', 'dari']);
         }
-        
+
 
         return datatables()->of($pengajuan)
-                        ->addColumn('action', function($data){
+            ->addColumn('action', function ($data) {
 
-                            $button = '';
-                            
-                            $button .= '<button type="button" class="btn btn-xs btn-primary buka"  berkas_id="'.$data->id .'" seksi_id="'.$data->seksi_id .'" ><i class="bx bxs-lock"></i></button>';
+                $button = '';
 
-                            
+                $button .= '<button type="button" class="btn btn-xs btn-primary buka"  berkas_id="' . $data->id . '" seksi_id="' . $data->seksi_id . '" ><i class="bx bxs-lock"></i></button>';
 
-                            return $button;
-                            
-                        })
 
-                        ->setRowClass(function ($data) {
-                            return $data->percepatan ? 'blink' : '';
-                        })
-                        
-                        ->rawColumns(['tanggal','action'])                        
-                        ->addIndexColumn()
-                        ->make(true);
+
+                return $button;
+            })
+
+            ->setRowClass(function ($data) {
+                return $data->percepatan ? 'blink' : '';
+            })
+
+            ->rawColumns(['tanggal', 'action'])
+            ->addIndexColumn()
+            ->make(true);
     }
 
-    public function bukaValidasiBerkas($berkas_id, $seksi_id){
+    public function bukaValidasiBerkas($berkas_id, $seksi_id)
+    {
         if ($seksi_id == 2) {
-            Berkas::where('id',$berkas_id)->update([
+            Berkas::where('id', $berkas_id)->update([
                 'buka_validasi_bt' => 1,
                 'user_id' => Auth::id()
             ]);
-        }else{
-            Berkas::where('id',$berkas_id)->update([
+        } else {
+            Berkas::where('id', $berkas_id)->update([
                 'buka_validasi_su' => 1,
                 'user_id' => Auth::id()
             ]);
         }
 
-        $cek = Berkas::where('id',$berkas_id)->where('buka_validasi_bt',1)->where('buka_validasi_su',1)->first();
+        $cek = Berkas::where('id', $berkas_id)->where('buka_validasi_bt', 1)->where('buka_validasi_su', 1)->first();
 
         if ($cek) {
-            Berkas::where('id',$berkas_id)->update([
+            Berkas::where('id', $berkas_id)->update([
                 'proses_id' => 2,
                 'dari' => Auth::id(),
                 'user_id' => 28,
             ]);
 
-            $history = History::where('berkas_id',$berkas_id)->orderBy('id','DESC')->first();
+            $history = History::where('berkas_id', $berkas_id)->orderBy('id', 'DESC')->first();
 
-            History::where('id',$history->id)->update([
+            History::where('id', $history->id)->update([
                 'selesai' => date('Y-m-d H:i:s')
             ]);
 
             History::create([
-            
+
                 'berkas_id' => $berkas_id,
                 'proses_id' => 2,
                 'dari' => Auth::id(),
@@ -757,73 +773,76 @@ class BerkasController extends Controller
         }
 
         return true;
-
     }
 
-    public function getKeterangan($berkas_id, $history_id){
-        return view('berkas.get_keterangan',[
-            'dt_history' => History::where('id',$history_id)->first(),
-            'dt_berkas' => History::where('berkas_id',$berkas_id)->where('ket','!=',null)->where('id','!=',$history_id)->get(),
+    public function getKeterangan($berkas_id, $history_id)
+    {
+        return view('berkas.get_keterangan', [
+            'dt_history' => History::where('id', $history_id)->first(),
+            'dt_berkas' => History::where('berkas_id', $berkas_id)->where('ket', '!=', null)->where('id', '!=', $history_id)->get(),
             'berkas_id' => $berkas_id,
             'history_id' => $history_id
         ])->render();
     }
 
 
-    public function keteranganBerkas(Request $request){
-        History::where('id',$request->history_id)->update([
+    public function keteranganBerkas(Request $request)
+    {
+        History::where('id', $request->history_id)->update([
             'ket' => $request->ket,
             'user_ket' => Auth::id()
         ]);
-        
+
         return true;
     }
 
-    public function kunciBerkas($history_id){
-        History::where('id',$history_id)->update([
+    public function kunciBerkas($history_id)
+    {
+        History::where('id', $history_id)->update([
             'user_id' => Auth::id()
         ]);
 
         return true;
     }
 
-    public function bukaBerkas($history_id){
-        History::where('id',$history_id)->update([
+    public function bukaBerkas($history_id)
+    {
+        History::where('id', $history_id)->update([
             'user_id' => 0
         ]);
 
         return true;
     }
 
-    public function deleteFileSelesai(){
-        $dt_berkas = Berkas::where('selesai',1)->where('created_at','>=','2025-01-01 00:00:01')->where('created_at','<=','2025-01-31 23:59:59')->get();
+    public function deleteFileSelesai()
+    {
+        $dt_berkas = Berkas::where('selesai', 1)->where('created_at', '>=', '2025-01-01 00:00:01')->where('created_at', '<=', '2025-01-31 23:59:59')->get();
 
         foreach ($dt_berkas as $d) {
-            File::delete('scan/'.$d->file_name);
+            File::delete('scan/' . $d->file_name);
         }
 
         return true;
-
     }
-    
+
     // public function import(){
-        
+
     //     return view('berkas.import',[
     //         'title' => 'import'
     //     ]);
 
     // }
-    
+
     // public function importDataSU(Request $request)
     // {
     //     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx;
     //     $spreadsheet = $reader->load($_FILES['file_excel']['tmp_name']);
-        
+
     //     $sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
     //     $numrow = 1;
 
-        
+
     //         foreach ($sheet as $row) {
 
     //             if ($row['A'] == "" &&  $row['B'] == "" &&  $row['C'] == "" &&  $row['D'] == "" &&  $row['E'] == "" &&  $row['F'] == "" &&  $row['G'] == "" &&  $row['H'] == "" )
@@ -846,36 +865,67 @@ class BerkasController extends Controller
 
     // }
 
-    public function uraiBTSU() {
+    public function uraiBTSU()
+    {
 
-        $berkas = History::where('selesai',null)->where('proses_id',3)->get();
+        $berkas = History::where('selesai', null)->where('proses_id', 3)->get();
 
         foreach ($berkas as $d) {
-                    History::where('id',$d->id)->update([
-                        'selesai' => date('Y-m-d H:i:s')
-                    ]);
-                    
-                    History::create([
-            
-                        'berkas_id' => $d->berkas_id,
-                        'proses_id' => 9,
-                        'dari' => Auth::id(),
-                        'user_id' => 28,
-                    ]);
+            History::where('id', $d->id)->update([
+                'selesai' => date('Y-m-d H:i:s')
+            ]);
 
-                    History::create([
-            
-                        'berkas_id' => $d->berkas_id,
-                        'proses_id' => 10,
-                        'dari' => Auth::id(),
-                        'user_id' => 28,
-                    ]);
+            History::create([
+
+                'berkas_id' => $d->berkas_id,
+                'proses_id' => 9,
+                'dari' => Auth::id(),
+                'user_id' => 28,
+            ]);
+
+            History::create([
+
+                'berkas_id' => $d->berkas_id,
+                'proses_id' => 10,
+                'dari' => Auth::id(),
+                'user_id' => 28,
+            ]);
         }
 
         return 'yaaa';
-    
-
     }
 
+    public function kembaliSu($jenis, $history_id, $berkas_id, $proses_id)
+    {
+        History::where('id', $history_id)->update([
+            'selesai' => date('Y-m-d H:i:s'),
+            'user_id' => Auth::id(),
+        ]);
 
+        History::create([
+            'berkas_id' => $berkas_id,
+            'proses_id' => 10,
+            'dari' => Auth::id(),
+            'user_id' => 28,
+        ]);
+
+        return true;
+    }
+
+    public function kembaliBt($jenis, $history_id, $berkas_id, $proses_id)
+    {
+        History::where('id', $history_id)->update([
+            'selesai' => date('Y-m-d H:i:s'),
+            'user_id' => Auth::id(),
+        ]);
+
+        History::create([
+            'berkas_id' => $berkas_id,
+            'proses_id' => 9,
+            'dari' => Auth::id(),
+            'user_id' => 28,
+        ]);
+
+        return true;
+    }
 }
