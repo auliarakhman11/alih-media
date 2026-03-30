@@ -209,6 +209,18 @@ class BerkasController extends Controller
                                 </div>';
                 }
 
+                if (Auth::id() != 1 && ($proses_id == 4 || $proses_id == 5)) {
+                    $button .= '<br>';
+                    $button .= '<div class="btn-group" role="group">
+                                    <button id="btn_kembali' . $data->id . '" type="button" class="btn btn-xs mt-2 mr-2 btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Kembalikan
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <li><a class="dropdown-item kembali_su" href="javascript:void(0)" berkas_id="' . $data->berkas_id . '" history_id="' . $data->id . '" jenis="' . $data->proses->jenis . '" proses_id="' . $proses_id . '" >Pencarian & Upload SU</a></li>
+                                    </ul>
+                                </div>';
+                }
+
 
                 return $button;
             })
